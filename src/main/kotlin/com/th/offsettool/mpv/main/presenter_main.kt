@@ -1,10 +1,29 @@
-package com.th.offsettool.main
+package com.th.offsettool.mpv.main
 
+import com.google.gson.Gson
 import com.th.offsettool.bean.DataMain
 import com.th.offsettool.bean.Value
-import com.th.offsettool.ui.UIMain
+import com.th.offsettool.util.logerr
+import java.io.File
+import java.lang.Exception
 
-class PresenterMain(): ContactMain.Presenter {
+class PresenterMain : ContactMain.Presenter {
+    override fun saveFile(file: File?) {
+        if (file == null) return
+        file.printWriter().use {
+            print(Gson().toJson(this.mData))
+        }
+    }
+
+    override fun loadFile(file: File?) {
+        if (file == null) return
+        try {
+            mData = Gson().fromJson(file.readText(), DataMain::class.java)
+            mView.updateUI(mData)
+        } catch (e: Exception) {
+            logerr(e)
+        }
+    }
 
     var mData: DataMain = DataMain()
     lateinit var mView: ContactMain.View

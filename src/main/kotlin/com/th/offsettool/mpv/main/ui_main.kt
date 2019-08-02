@@ -1,10 +1,11 @@
-package com.th.offsettool.ui
+package com.th.offsettool.mpv.main
 
 import com.th.offsettool.bean.DataMain
-import com.th.offsettool.main.ContactMain
-import java.awt.BorderLayout
-import java.awt.Dimension
-import java.awt.FlowLayout
+import com.th.offsettool.util.DEFAULT_FILE_NAME
+import com.th.offsettool.util.FILE_FILTER
+import javafx.stage.FileChooser
+import java.awt.*
+import java.io.File
 import javax.swing.*
 import javax.swing.table.AbstractTableModel
 
@@ -23,12 +24,45 @@ class UIMain(val presenter: ContactMain.Presenter): ContactMain.View {
     })
 
     init {
+        initMenu()
         presenter.setView(this)
         root.size = Dimension(800, 600)
         root.add(addPanel.root, BorderLayout.NORTH)
         table.addMe(root)
         root.defaultCloseOperation = JFrame.EXIT_ON_CLOSE
         root.isVisible = true
+    }
+
+    private fun initMenu() {
+        this.root.menuBar = MenuBar().apply {
+            add(Menu("File").apply {
+                add(MenuItem("Save").apply {
+                    addActionListener {
+                        fileChooser { chooser, file ->
+                            chooser.showSaveDialog(chooser)
+                            presenter.saveFile(file)
+                        }
+                    }
+                })
+
+                add(MenuItem("Load").apply {
+                    addActionListener {
+                        fileChooser { chooser, file ->
+                            chooser.showOpenDialog(chooser)
+                            presenter.loadFile(file)
+                        }
+                    }
+                })
+
+            })
+        }
+    }
+
+    private fun fileChooser(callback: (chooser: JFileChooser, file: File?) -> Unit) {
+        JFileChooser(DEFAULT_FILE_NAME).apply {
+            this.fileFilter = FILE_FILTER
+            callback.invoke(this, selectedFile)
+        }
     }
 
     override fun updateUI(dataMain: DataMain) {

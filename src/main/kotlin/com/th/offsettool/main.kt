@@ -1,8 +1,7 @@
 package com.th.offsettool
 
-import com.th.offsettool.bean.Value
-import com.th.offsettool.main.PresenterMain
-import com.th.offsettool.ui.UIMain
+import com.th.offsettool.mpv.main.PresenterMain
+import com.th.offsettool.mpv.main.UIMain
 
 
 fun main() {
@@ -10,8 +9,6 @@ fun main() {
     UIMain(presenter)
 
     presenter.apply {
-        this.mData.mBases.add(Value(0x10000))
-        this.mData.mOffsets.add(Value(0x2))
         this.mView.updateUI(this.mData)
     }
 
